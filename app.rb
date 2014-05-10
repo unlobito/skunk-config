@@ -3,11 +3,16 @@ require 'erb'
 require 'json'
 require 'monetize'
 require 'oauth'
+require 'openssl'
 require 'sinatra'
 
 require './env' if File.exists? 'env.rb'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
+
+# Disable SSL certificate checking because Starbucks doesn't send their
+# intermediary certificate. :(
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 helpers do
   def base_url
