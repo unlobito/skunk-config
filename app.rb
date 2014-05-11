@@ -10,10 +10,6 @@ require './env' if File.exists? 'env.rb'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
-# Disable SSL certificate checking because Starbucks doesn't send their
-# intermediary certificate. :(
-OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
-
 helpers do
   def base_url
     @base_url ||= begin
@@ -33,6 +29,7 @@ def consumer
       request_token_path: '/OAuth/RequestToken',
       access_token_path: '/OAuth/AccessToken',
       authorize_path: '/OAuth/AuthorizeToken',
+      ca_file: 'sbux_intermediate.pem'
     }
     OAuth::Consumer.new(
       ENV['SBUX_CONSUMER_KEY'],
