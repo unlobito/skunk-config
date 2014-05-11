@@ -139,7 +139,7 @@ get '/login' do
   session[:request_secret] = request_token.secret
 
   # Redirect to Starbucks for authorization.
-  redirect request_token.authorize_url
+  redirect request_token.authorize_url(oauth_callback: callback)
 end
 
 get '/callback' do
