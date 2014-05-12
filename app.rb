@@ -70,8 +70,9 @@ def pebble_pbi(image)
     for x in 0...image.width do
       row << pixel_str(image[x, y])
     end
-    data << [row].pack('B*')
-    data << "\0" until (data.length % 4) == 0
+    data_row = [row].pack('b*')
+    data_row << "\0" until (data_row.length % 4) == 0
+    data << data_row
   end
 
   data.each_codepoint.to_a
