@@ -5,6 +5,7 @@ require 'monetize'
 require 'oauth'
 require 'openssl'
 require 'sinatra'
+require 'uri'
 
 require './env' if File.exists? 'env.rb'
 
@@ -163,12 +164,13 @@ get '/callback' do
   access_token = request_token.get_access_token(oauth_verifier: verifier)
 
   # Construct the response data, and go.
-  dict = {
+  data = {
     access_token: access_token.token,
     access_token_secret: access_token.secret,
   }
-  hash = ERB::Util.url_encode(dict.to_json)
-  redirect "pebblejs://close\##{hash}"
+  fragment = URI.encode_www_form(data)
+  url = URI::Generic.build(scheme: 'pebblejs', host: 'close', fragment: fragment)
+  redirect url.to_s
 end
 
 get '/data' do
