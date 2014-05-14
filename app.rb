@@ -8,6 +8,7 @@ require 'sinatra'
 require 'uri'
 
 require './env' if File.exists? 'env.rb'
+require './pbi'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
@@ -88,8 +89,7 @@ def pebble_barcode(card, access_token)
   image = ChunkyPNG::Image.from_datastream(ds)
   image.trim!
   image.resample_nearest_neighbor!(142, 8)
-
-  pebble_pbi(image)
+  image.to_pbi
 end
 
 def me_data(access_token)
