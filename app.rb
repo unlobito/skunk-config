@@ -121,10 +121,16 @@ def rewards_data(access_token)
   data = access_token.get(url, { 'Accept' => 'application/json' })
   json = JSON.parse(data.body)
 
+  threshold = json['starsThresholdForFreeDrink'].to_i
+  stars_left = json['starsNeededForNextFreeDrink'].to_i
+
+  stars = threshold - stars_left
+  stars = 0 if stars < 0
+
   {
     updated_at: date_to_i(json['dateRetrieved']),
-    stars_threshold: json['starsThresholdForFreeDrink'],
-    stars_until_drink: json['starsNeededForNextFreeDrink'],
+    stars: stars,
+    drinks: 0,
   }
 end
 
