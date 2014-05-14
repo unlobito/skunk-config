@@ -46,11 +46,13 @@ def balance(card)
   Monetize.parse(balance, currency).format
 end
 
-def format_date(date)
+def date_to_i(date)
   matches = /\/Date\((\w*)([+-]\d{4})\)\//.match(date)
-  sec = matches[1].to_i / 1000
-  tz = matches[2].insert(-3, ':')
-  Time.at(sec).localtime(tz).strftime("%b %-e, %H:%M GMT%z")
+  if match = matches[1]
+    (match.to_i / 1000).round
+  else
+    -1
+  end
 end
 
 def pixel_str(pixel)
@@ -101,7 +103,7 @@ def me_data(access_token)
   cards = json['starbucksCards'].map do |card|
     {
       balance: balance(card),
-      updated_at: format_date(card['balanceDate']),
+      updated_at: date_to_i(card['balanceDate']),
       name: card['nickname'],
       number: card['number'],
       barcode_data: pebble_barcode(card['number'], access_token)
@@ -120,7 +122,7 @@ def rewards_data(access_token)
   json = JSON.parse(data.body)
 
   {
-    updated_at: format_date(json['dateRetrieved']),
+    updated_at: date_to_i(json['dateRetrieved']),
     stars_threshold: json['starsThresholdForFreeDrink'],
     stars_until_drink: json['starsNeededForNextFreeDrink'],
   }
