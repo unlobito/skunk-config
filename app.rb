@@ -97,9 +97,6 @@ def me_data(access_token)
   data = access_token.get(url, { 'Accept' => 'application/json' })
   json = JSON.parse(data.body)
 
-  user = json['user']
-  name = "#{user['firstName']} #{user['lastName']}"
-
   cards = json['starbucksCards'].map do |card|
     {
       balance: balance(card),
@@ -111,7 +108,6 @@ def me_data(access_token)
   end
 
   {
-    name: name,
     cards: cards
   }
 end
