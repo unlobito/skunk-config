@@ -85,7 +85,7 @@ def pebble_barcode(card, access_token)
   ds = ChunkyPNG::Datastream.from_blob(data.body)
   image = ChunkyPNG::Image.from_datastream(ds)
   image.trim!
-  image.resample_nearest_neighbor!(142, 64)
+  image.resample_nearest_neighbor!(142, 8)
 
   pebble_pbi(image)
 end
