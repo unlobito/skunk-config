@@ -124,7 +124,7 @@ def rewards_data(access_token)
   {
     updated_at: date_to_i(json['dateRetrieved']),
     stars: stars,
-    drinks: 0,
+    drinks: json['coupons'].length,
   }
 end
 
