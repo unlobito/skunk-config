@@ -100,9 +100,7 @@ def me_data(access_token)
   cards = json['starbucksCards'].map do |card|
     {
       balance: balance(card),
-      updated_at: date_to_i(card['balanceDate']),
       name: card['nickname'],
-      number: card['number'],
       barcode_data: pebble_barcode(card['number'], access_token)
     }
   end
