@@ -1,9 +1,7 @@
 require 'chunky_png'
-require 'erb'
 require 'json'
 require 'monetize'
 require 'oauth'
-require 'openssl'
 require 'sinatra'
 require 'uri'
 
