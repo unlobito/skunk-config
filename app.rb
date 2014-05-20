@@ -151,7 +151,7 @@ get '/callback' do
   redirect url.to_s
 end
 
-get '/data' do
+post '/data' do
   # Reconstruct the access token from the query params.
   access_token = OAuth::AccessToken.from_hash(
     consumer,
@@ -170,7 +170,7 @@ get '/data' do
   end
 end
 
-get '/raw' do
+post '/raw' do
   # Reconstruct the access token from the query params.
   access_token = OAuth::AccessToken.from_hash(
     consumer,
