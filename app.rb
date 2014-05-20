@@ -193,3 +193,24 @@ get '/data' do
     halt 400
   end
 end
+
+get '/raw' do
+  # Reconstruct the access token from the query params.
+  access_token = OAuth::AccessToken.from_hash(
+    consumer,
+    oauth_token: params[:access_token],
+    oauth_token_secret: params[:access_token_secret]
+  )
+
+  url = params[:url]
+  halt 400 unless url
+
+  request_headers = {}
+  request_headers['Accept'] = 'application/json' if params[:json]
+
+  response = access_token.get(url, request_headers)
+
+  status response.code
+  headers response.header.to_hash
+  body response.body
+end
