@@ -53,6 +53,7 @@ def date_to_i(date)
 end
 
 def pebble_barcode(card, access_token)
+  # Get the barcode.
   url = "https://api.starbucks.com/barcode/v1/mobile/payment/starbuckscard/#{card}?engine=onbarcode&height=85&width=200"
   data = access_token.get(url)
 
@@ -64,10 +65,12 @@ def pebble_barcode(card, access_token)
 end
 
 def me_data(access_token)
+  # Get the profile data.
   url = 'https://api.starbucks.com/starbucksprofile/v1/users/me'
   data = access_token.get(url, { 'Accept' => 'application/json' })
   json = JSON.parse(data.body)
 
+  # Get the interesting card data.
   cards = json['starbucksCards'].map do |card|
     {
       balance: balance(card),
@@ -82,6 +85,7 @@ def me_data(access_token)
 end
 
 def rewards_data(access_token)
+  # Get the rewards data.
   url = 'https://api.starbucks.com/starbucksprofile/v1/users/me/rewards'
   data = access_token.get(url, { 'Accept' => 'application/json' })
   json = JSON.parse(data.body)
@@ -89,6 +93,7 @@ def rewards_data(access_token)
   threshold = json['starsThresholdForFreeDrink'].to_i
   stars_left = json['starsNeededForNextFreeDrink'].to_i
 
+  # Get the number of stars until the threshold.
   stars = threshold - stars_left
   stars = 0 if stars < 0
 
