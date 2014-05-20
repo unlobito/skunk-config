@@ -82,7 +82,7 @@ def me_data(access_token)
   begin
     json = JSON.parse(response.body)
   rescue JSON::ParserError => e
-    halt response.code
+    halt response.code.to_i
   end
 
   # Get the interesting card data
@@ -108,7 +108,7 @@ def rewards_data(access_token)
   begin
     json = JSON.parse(response.body)
   rescue JSON::ParserError => e
-    halt response.code
+    halt response.code.to_i
   end
 
   threshold = json['starsThresholdForFreeDrink'].to_i
