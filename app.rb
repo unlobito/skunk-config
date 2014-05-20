@@ -52,31 +52,6 @@ def date_to_i(date)
   end
 end
 
-def pixel_str(pixel)
-  rgba = ChunkyPNG::Color.to_truecolor_alpha_bytes(pixel)
-  rgba[3] < 127 || (rgba[0] + rgba[1] + rgba[2]) / 3 < 127 ? '0' : '1'
-end
-
-def pebble_pbi(image)
-  row_size_bytes = (image.width + 31) / 32 * 4
-  info_flags = 1 << 12
-
-  fields = [ row_size_bytes, info_flags, 0, 0, image.width, image.height ]
-  data = fields.pack("S<S<s<s<s<s<")
-
-  for y in 0...image.height do
-    row = ''
-    for x in 0...image.width do
-      row << pixel_str(image[x, y])
-    end
-    data_row = [row].pack('b*')
-    data_row << "\0" until (data_row.length % 4) == 0
-    data << data_row
-  end
-
-  data.each_codepoint.to_a
-end
-
 def pebble_barcode(card, access_token)
   url = "https://api.starbucks.com/barcode/v1/mobile/payment/starbuckscard/#{card}?engine=onbarcode&height=85&width=200"
   data = access_token.get(url)
