@@ -12,11 +12,9 @@ use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
 helpers do
   def base_url
-    @base_url ||= begin
-      scheme = request.env['rack.url_scheme']
-      host = request.env['HTTP_HOST']
-      "#{scheme}://#{host}"
-    end
+    scheme = request.env['rack.url_scheme']
+    host = request.env['HTTP_HOST']
+    "#{scheme}://#{host}"
   end
 end
 
