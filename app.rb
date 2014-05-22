@@ -1,6 +1,7 @@
 require 'chunky_png'
 require 'json'
 require 'monetize'
+require 'net/http'
 require 'oauth'
 require 'sinatra'
 require 'uri'
@@ -16,6 +17,20 @@ helpers do
     host = request.env['HTTP_HOST']
     "#{scheme}://#{host}"
   end
+end
+
+def track_analytics(endpoint, pebble_id, version)
+  params = {
+    'v' => '1',
+    'tid' => ENV['GOOGLE_ANALYTICS_ID'],
+    'cid' => pebble_id || 'UNKNOWN',
+    't' => 'screenview',
+    'an' => ENV['PEBBLE_APP_NAME'],
+    'aid' => ENV['PEBBLE_APP_ID'],
+    'av' => version || 'UNKNOWN',
+    'cd' => endpoint,
+  }
+  Net::HTTP.post_form URI('http://www.google-analytics.com/collect'), params
 end
 
 def consumer
@@ -124,6 +139,12 @@ def rewards_data(access_token)
     stars: stars,
     drinks: json['coupons'].length,
   }
+end
+
+before do
+  if pebble_id = params[:pebble] && version = params[:version]
+    track_analytics(request.path_info, pebble_id, version)
+  end
 end
 
 get '/' do
