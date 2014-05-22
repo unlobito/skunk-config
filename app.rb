@@ -101,7 +101,9 @@ def me_data(access_token)
   end
 
   # Get the interesting card data
-  cards = json['starbucksCards'].map do |card|
+  cards = json['starbucksCards']
+  cards = {} unless cards
+  cards.map! do |card|
     {
       balance: balance(card),
       name: card['nickname'],
