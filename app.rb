@@ -126,12 +126,19 @@ def rewards_data(access_token)
     halt response.code.to_i
   end
 
-  threshold = json['starsThresholdForFreeDrink'].to_i
   stars_left = json['starsNeededForNextFreeDrink'].to_i
 
-  # Get the number of stars until the threshold
-  stars = threshold - stars_left
-  stars = 0 if stars < 0
+  if stars_left >= 0
+    # Get the threshold (should be 12)
+    threshold = json['starsThresholdForFreeDrink'].to_i
+
+    # Get the number of stars until the threshold
+    stars = threshold - stars_left
+    stars = 0 if stars < 0
+  else
+    # User doesn't receive free drinks at theshold. Show star total
+    stars = json['totalPoints'].to_i
+  end
 
   # Form the result data
   {
