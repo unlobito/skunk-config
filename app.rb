@@ -142,11 +142,14 @@ def rewards_data(access_token)
     stars = json['totalPoints'].to_i
   end
 
+  coupons = json['coupons']
+  coupons = [] unless coupons
+
   # Form the result data
   {
     updated_at: date_to_i(json['dateRetrieved']),
     stars: stars,
-    drinks: json['coupons'].length,
+    drinks: coupons.length,
   }
 end
 
