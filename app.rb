@@ -62,7 +62,7 @@ end
 # Convert a Starbucks "date" into a UNIX timestamp.
 def date_to_i(date)
   matches = /\/Date\((\w*)([+-]\d{4})\)\//.match(date)
-  if match = matches[1]
+  if matches && match = matches[1]
     (match.to_i / 1000).round
   else
     -1
