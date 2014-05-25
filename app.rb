@@ -82,7 +82,7 @@ end
 
 def me_data(access_token)
   # Get the profile data
-  url = 'https://api.starbucks.com/starbucksprofile/v1/users/me'
+  url = 'https://api.starbucks.com/starbucksprofile/v1/users/me/cards'
   response = access_token.get(url, { 'Accept' => 'application/json' })
 
   # Try to parse the result JSON
@@ -93,7 +93,7 @@ def me_data(access_token)
   end
 
   # Get the interesting card data
-  cards = json['starbucksCards']
+  cards = json
   cards = [] unless cards
   cards.map! do |card|
     {
