@@ -11,14 +11,6 @@ require './pbi'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
-helpers do
-  def base_url
-    scheme = request.env['rack.url_scheme']
-    host = request.env['HTTP_HOST']
-    "#{scheme}://#{host}"
-  end
-end
-
 def track_analytics(endpoint, pebble_id, version)
   params = {
     'v' => '1',
@@ -165,7 +157,7 @@ end
 
 get '/login' do
   # Get a request token from Starbucks
-  callback = "#{base_url}/callback"
+  callback = "https://pebblebucks.herokuapp.com/callback"
   request_token = consumer.get_request_token(oauth_callback: callback)
 
   # Store both the token and secret in the session
