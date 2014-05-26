@@ -80,7 +80,7 @@ def pebble_barcode(card, access_token)
   image.to_pbi
 end
 
-def me_data(access_token)
+def cards_data(access_token)
   # Get the profile data
   url = 'https://api.starbucks.com/starbucksprofile/v1/users/me/cards'
   response = access_token.get(url, { 'Accept' => 'application/json' })
@@ -93,19 +93,14 @@ def me_data(access_token)
   end
 
   # Get the interesting card data
-  cards = json
-  cards = [] unless cards
-  cards.map! do |card|
+  cards = json || []
+  cards.map do |card|
     {
       balance: balance(card),
       name: card['nickname'],
       barcode_data: pebble_barcode(card['number'], access_token)
     }
   end
-
-  {
-    cards: cards
-  }
 end
 
 def rewards_data(access_token)
@@ -214,11 +209,11 @@ post '/data' do
     oauth_token_secret: params[:access_token_secret]
   )
 
-  response_data = me_data(access_token)
-  response_data['rewards'] = rewards_data(access_token)
-
   content_type :json
-  JSON.generate(response_data)
+  JSON.generate({
+    cards: cards_data(access_token),
+    rewards: rewards_data(access_token),
+  })
 end
 
 post '/raw' do
