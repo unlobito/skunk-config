@@ -198,7 +198,15 @@ get '/callback' do
   )
 
   # Redirect to "pebblejs://close#..."
-  redirect url.to_s
+  content_type :html
+  body <<-eof
+    <h1>Success</h1>
+    <script>
+      setTimeout(function() {
+        window.location.href = '#{url}';
+      }, 1000);
+    </script>
+  eof
 end
 
 post '/data' do
