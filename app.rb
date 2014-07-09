@@ -180,12 +180,11 @@ get '/settings' do
   user = catch(:halt) {
     user_data(access_token)
   }
-  puts user
 
   if user == 401 || user == nil
     redirect "/login?pebble=" + params[:pebble] + "&version=" + params[:version]
   else
-    erb :settings, :locals => {:user => user, :cards => cards_data(access_token), :pebble => params[:pebble], :version => params[:version]}
+    erb :settings, locals: { user: user, cards: cards_data(access_token), pebble: params[:pebble], version: params[:version] }
   end
 end
 
@@ -236,7 +235,7 @@ get '/callback' do
     fragment: fragment
   )
 
-  erb :welcome, :locals => { :location => url }
+  erb :welcome, locals: { location: url }
 end
 
 post '/data' do
