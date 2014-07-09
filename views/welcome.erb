@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Pebblebucks</title>
+  <style type="text/css">
+    body {
+      margin: 0px;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      font-family: Helvetica;
+    }
+    #UIMessage {
+      padding-top: 40px;
+      text-align: center;
+    }
+    #UIMessage span {
+      font-size: 22pt;
+    }
+  </style>
+</head>
+<body>
+  <div id="UIMessage">
+    <img src="check.png" width="100px" /><br /><br />
+    <span>You've been successfully logged in.</span>
+  </div>
+  <script>
+    setTimeout(function() {
+      window.location.href = '<%= location %>';
+    }, 2000);
+  </script>
+</body>
+</html>
