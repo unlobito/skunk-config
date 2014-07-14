@@ -182,7 +182,7 @@ get '/settings' do
   }
 
   if user == 401 || user == nil
-    redirect "/login?pebble=" + params[:pebble] + "&version=" + params[:version]
+    redirect "/login?pebble=" + (params[:pebble] || '') + "&version=" + (params[:version] || '')
   else
     erb :settings, locals: { user: user, cards: cards_data(access_token), pebble: params[:pebble], version: params[:version] }
   end
