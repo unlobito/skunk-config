@@ -99,6 +99,7 @@ def cards_data(access_token)
     {
       balance: balance(card),
       name: card['nickname'],
+      image: card['imageUrl'],
       barcode_data: pebble_barcode(card['number'], access_token)
     }
   end
@@ -141,6 +142,23 @@ def rewards_data(access_token)
   }
 end
 
+def user_data(access_token)
+  # Get the profile data
+  url = 'https://api.starbucks.com/starbucksprofile/v1/users/me'
+  response = access_token.get(url, { 'Accept' => 'application/json' })
+
+  # Try to parse the result JSON
+  begin
+    json = JSON.parse(response.body)
+  rescue JSON::ParserError => e
+    halt response.code.to_i
+  end
+
+  # Get the interesting user data
+  user = json || []
+  user = user['user']
+end
+
 before do
   if pebble_id = params[:pebble] && version = params[:version]
     track_analytics(request.path_info, pebble_id, version)
@@ -149,6 +167,25 @@ end
 
 get '/' do
   redirect '/login'
+end
+
+get '/settings' do
+  # Reconstruct the access token from the query params
+  access_token = OAuth::AccessToken.from_hash(
+    consumer,
+    oauth_token: params[:access_token],
+    oauth_token_secret: params[:access_token_secret]
+  )
+
+  user = catch(:halt) {
+    user_data(access_token)
+  }
+
+  if user == 401 || user == nil
+    redirect "/login?pebble=" + params[:pebble] + "&version=" + params[:version]
+  else
+    erb :settings, locals: { user: user, cards: cards_data(access_token), pebble: params[:pebble], version: params[:version] }
+  end
 end
 
 get '/login' do
@@ -198,16 +235,7 @@ get '/callback' do
     fragment: fragment
   )
 
-  # Redirect to "pebblejs://close#..."
-  content_type :html
-  body <<-eof
-    <h1>Success</h1>
-    <script>
-      setTimeout(function() {
-        window.location.href = '#{url}';
-      }, 1000);
-    </script>
-  eof
+  erb :welcome, locals: { location: url }
 end
 
 post '/data' do

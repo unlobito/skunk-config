@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Pebblebucks</title>
+  <style type="text/css">
+    body {
+      margin: 0px;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      font-family: Helvetica;
+    }
+    #UIUserBit {
+      padding: 10px;
+    }
+    #UIUserDetails {
+      padding-top: 13px;
+      padding-left: 85px;
+    }
+    #UIUserName {
+      font-size: 22pt;
+    }
+    #UICardsView {
+      margin-top: 20px;
+      border-top: solid #323232 1px;
+    }
+    .UICard {
+      height: 52px;
+      padding-top: 10px;
+      padding-bottom: 12px;
+      padding-left: 10px;
+      padding-right: 10px;
+      border-bottom: solid #323232 1px;
+    }
+    .UICardNickname {
+      font-size: 18pt;
+    }
+    a {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div id="UIUserBit">
+    <img src="icon.png" width="72px" style="float: left;" />
+    <div id="UIUserDetails">
+      <span id="UIUserName"><%= user['firstName'] %> <%= user['lastName'] %></span><br />
+      (<a href="/login?pebble=<%= pebble %>&version=<%= version %>">That's not me!</a>)
+    </div>
+  </div>
+  <div id="UICardsView">
+    <% cards.each do |card| %>
+    <div class="UICard">
+      <img src="<%= card[:image] %>" height="55px" style="float:right;" />
+      <span class="UICardNickname"><%= card[:name] %></span><br />
+      <%= card[:balance] %>
+    </div>
+    <% end %>
+  </div>
+</body>
+</html>
