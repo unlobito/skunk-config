@@ -139,6 +139,7 @@ def rewards_data(access_token)
 
   coupons = json['coupons']
   coupons = [] unless coupons
+  coupons.reject! { |coupon| coupon['code'] == '351' }
 
   # Form the result data
   {
