@@ -94,7 +94,13 @@ def cards_data(access_token)
 
   # Get the interesting card data
   cards = json || []
-  cards.sort! { |a,b| (a['isDefaultCard'] == b['isDefaultCard']) ? ((a['balanceDate'] < b['balanceDate']) ? 1 : -1) : (a['isDefaultCard'] ? -1 : 1)}
+  cards.sort! do |a,b|
+    if a['isDefaultCard'] == b['isDefaultCard']
+      a['balanceDate'] < b['balanceDate'] ? 1 : -1
+    else
+      a['isDefaultCard'] ? -1 : 1
+    end
+  end
   cards.map do |card|
     {
       balance: balance(card),
