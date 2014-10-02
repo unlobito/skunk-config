@@ -1,6 +1,6 @@
 require 'chunky_png'
 require 'json'
-require 'monetize'
+require 'money'
 require 'net/http'
 require 'oauth'
 require 'sinatra'
@@ -48,7 +48,7 @@ end
 def balance(card)
   balance = card['balance']
   currency = card['balanceCurrencyCode']
-  Monetize.parse(balance, currency).format
+  Money.new(balance, currency).format
 end
 
 # Convert a Starbucks "date" into a UNIX timestamp.
