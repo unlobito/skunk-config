@@ -47,7 +47,7 @@ end
 
 # Format the card's balance
 def balance(card)
-  balance = card['balance']
+  balance = 100 * card['balance']
   currency = card['balanceCurrencyCode']
   Money.new(balance, currency).format
 end
