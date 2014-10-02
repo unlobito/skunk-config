@@ -10,6 +10,7 @@ require './env' if File.exists? 'env.rb'
 require './pbi'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
+Money.use_i18n = false
 
 def track_analytics(endpoint, pebble_id, version)
   params = {
