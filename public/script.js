@@ -62,6 +62,7 @@ function renderData(data) {
       $("[name='barcode_" + i + "_name']").val(data.barcodes[i].name);
       $("[name='barcode_" + i + "_type']").val(data.barcodes[i].type);
       $("[name='barcode_" + i + "_data']").val(data.barcodes[i].data);
+      restrictInput(data.barcodes[i].type, i);
     }
   }
 }
@@ -88,4 +89,20 @@ function generatePebbleURL() {
   data_str = JSON.stringify(data);
 
   location.href = 'pebblejs://close#' + data_str;
+}
+
+function restrictInput(value, i) {
+  switch (value) {
+    case 'upca':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", 12);
+      $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      break;
+
+    case 'azteccode':
+    case 'qrcode':
+    case 'datamatrix':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", "");
+      $("[name='barcode_" + i + "_data']").attr("pattern", "");
+      break;
+  }
 }

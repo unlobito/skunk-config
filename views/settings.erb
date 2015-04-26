@@ -30,7 +30,7 @@
         <tr>
           <td>Type</td>
           <td class="UIInputDropdown">
-            <select name="barcode_<%= i %>_type">
+            <select name="barcode_<%= i %>_type" onchange="restrictInput(this.value, <%= i %>);">
               <optgroup label="Linear">
                 <option value="upca">UPC-A</option>
               </optgroup>
