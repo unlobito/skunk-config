@@ -1,286 +1,87 @@
 require 'chunky_png'
 require 'json'
-require 'money'
 require 'net/http'
-require 'oauth'
 require 'sinatra'
 require 'uri'
 
+require 'barby'
+require 'barby/barcode/qr_code'
+require 'barby/barcode/ean_13'
+require 'barby/outputter/png_outputter'
+
+require 'rghost'
+require 'rghost_barcode'
+
+require 'pdf417'
+
 require './env' if File.exists? 'env.rb'
-require './pbi'
+require './xbi'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
-Money.use_i18n = false
 
-def track_analytics(endpoint, pebble_id, version)
-  params = {
-    'v' => '1',
-    'tid' => ENV['GOOGLE_ANALYTICS_ID'],
-    'cid' => pebble_id || 'UNKNOWN',
-    't' => 'screenview',
-    'an' => ENV['PEBBLE_APP_NAME'],
-    'aid' => ENV['PEBBLE_APP_ID'],
-    'av' => version || 'UNKNOWN',
-    'cd' => endpoint,
-  }
-  Net::HTTP.post_form URI('http://www.google-analytics.com/collect'), params
-end
-
-def consumer
-  @consumer ||= begin
-    options = {
-      site: 'https://connect.starbucks.com',
-      scheme: :query_string,
-      http_method: :get,
-      request_token_path: '/OAuth/RequestToken',
-      access_token_path: '/OAuth/AccessToken',
-      authorize_path: '/OAuth/AuthorizeToken',
-      ca_file: 'sbux_intermediate.pem'
-    }
-    OAuth::Consumer.new(
-      ENV['SBUX_CONSUMER_KEY'],
-      ENV['SBUX_CONSUMER_SECRET'],
-      options
-    )
-  end
-end
-
-# Format the card's balance
-def balance(card)
-  balance = 100 * card['balance']
-  currency = card['balanceCurrencyCode']
-  Money.new(balance, currency).format
-end
-
-# Convert a Starbucks "date" into a UNIX timestamp.
-def date_to_i(date)
-  matches = /\/Date\((\w*)([+-]\d{4})\)\//.match(date)
-  if matches && match = matches[1]
-    (match.to_i / 1000).round
+def pebble_barcode(type, card)
+  if type == "qrcode"
+    barcode = Barby::QrCode.new(card, {:size => 6, :level => "l"})
+    barcode_png = barcode.to_png
+  elsif type == "upca"
+    barcode = Barby::EAN13.new(card)
+    barcode_png = barcode.to_png
   else
-    -1
+    doc=RGhost::Document.new
+    doc.send(("barcode_"+type).to_sym, card, {:x=> 1, :y => 1, :scale => [5,5]})
+
+    barcode_png = doc.render_stream :png
   end
-end
 
-def pebble_barcode(card, access_token)
-  # Get the barcode
-  url = "https://api.starbucks.com/barcode/v1/mobile/payment/starbuckscard/" + \
-    "#{card}?engine=onbarcode&height=85&width=200"
-  data = access_token.get(url)
-
-  ds = ChunkyPNG::Datastream.from_blob(data.body)
+  ds = ChunkyPNG::Datastream.from_blob(barcode_png)
   image = ChunkyPNG::Image.from_datastream(ds)
 
   # Trim the whitespace
   image.trim!
 
+  width = (40 * image.width / image.height)
+  height = 40
+
+  if width >= 65
+    width = 65
+    height = (65 * image.height / image.width)
+  end
+
   # Resize
-  image.resample_nearest_neighbor!(142, 8)
+  if type != "upca" && type != "qrcode"
+    image.resample_bilinear!(width, height)
+  end
 
   # Convert to .pbi format
-  image.to_pbi
+  if type != "upca"
+    image.to_xbi
+  else
+    image.to_xbi true
+  end
 end
 
-def cards_data(access_token)
-  # Get the profile data
-  url = 'https://api.starbucks.com/starbucksprofile/v1/users/me/cards'
-  response = access_token.get(url, { 'Accept' => 'application/json' })
-
-  # Try to parse the result JSON
-  begin
-    json = JSON.parse(response.body)
-  rescue JSON::ParserError => e
-    halt response.code.to_i
-  end
-
-  # Get the interesting card data
-  cards = json || []
-  cards.sort! do |a,b|
-    if a['isDefaultCard'] == b['isDefaultCard']
-      a['balanceDate'] < b['balanceDate'] ? 1 : -1
-    else
-      a['isDefaultCard'] ? -1 : 1
-    end
-  end
+def cards_data(cards)
   cards.map do |card|
     {
-      balance: balance(card),
-      name: card['nickname'],
-      image: card['imageUrl'],
-      barcode_data: pebble_barcode(card['number'], access_token)
+      name: card['name'],
+      barcode_data: pebble_barcode(card['type'], card['data'])
     }
   end
 end
 
-def rewards_data(access_token)
-  # Get the rewards data
-  url = 'https://api.starbucks.com/starbucksprofile/v1/users/me/rewards'
-  response = access_token.get(url, { 'Accept' => 'application/json' })
-
-  # Try to parse the result JSON
-  begin
-    json = JSON.parse(response.body)
-  rescue JSON::ParserError => e
-    halt response.code.to_i
-  end
-
-  stars_left = json['starsNeededForNextFreeDrink'].to_i
-
-  if stars_left >= 0
-    # Get the threshold (should be 12)
-    threshold = json['starsThresholdForFreeDrink'].to_i
-
-    # Get the number of stars until the threshold
-    stars = threshold - stars_left
-    stars = 0 if stars < 0
-  else
-    # User doesn't receive free drinks at theshold. Show star total
-    stars = json['totalPoints'].to_i
-  end
-
-  coupons = json['coupons']
-  coupons = [] unless coupons
-  coupons.reject! { |coupon| coupon['code'] == '351' }
-
-  # Form the result data
-  {
-    updated_at: date_to_i(json['dateRetrieved']),
-    stars: stars,
-    drinks: coupons.length,
-  }
-end
-
-def user_data(access_token)
-  # Get the profile data
-  url = 'https://api.starbucks.com/starbucksprofile/v1/users/me'
-  response = access_token.get(url, { 'Accept' => 'application/json' })
-
-  # Try to parse the result JSON
-  begin
-    json = JSON.parse(response.body)
-  rescue JSON::ParserError => e
-    halt response.code.to_i
-  end
-
-  # Get the interesting user data
-  user = json || []
-  user = user['user']
-end
-
-before do
-  if pebble_id = params[:pebble] && version = params[:version]
-    track_analytics(request.path_info, pebble_id, version)
-  end
-end
-
 get '/' do
-  redirect '/login'
+  redirect '/settings'
 end
 
 get '/settings' do
-  # Reconstruct the access token from the query params
-  access_token = OAuth::AccessToken.from_hash(
-    consumer,
-    oauth_token: params[:access_token],
-    oauth_token_secret: params[:access_token_secret]
-  )
-
-  user = catch(:halt) {
-    user_data(access_token)
-  }
-
-  if user == 401 || user == nil
-    redirect "/login?pebble=" + (params[:pebble] || '') + "&version=" + (params[:version] || '')
-  else
-    erb :settings, locals: { user: user, cards: cards_data(access_token), pebble: params[:pebble], version: params[:version] }
-  end
-end
-
-get '/login' do
-  # Get a request token from Starbucks
-  callback = "https://pebblebucks.herokuapp.com/callback"
-  request_token = consumer.get_request_token(oauth_callback: callback)
-
-  # Store both the token and secret in the session
-  session[:request_token] = request_token.token
-  session[:request_secret] = request_token.secret
-
-  # Redirect to Starbucks for authorization
-  redirect request_token.authorize_url(oauth_callback: callback)
-end
-
-get '/callback' do
-  # Get the token and secret we stored in the session
-  token = session[:request_token]
-  secret = session[:request_secret]
-
-  # If we don't have both, someone done goofed
-  halt 400 unless token and secret
-  session[:request_token] = session[:request_secret] = nil
-
-  # Reconstruct the request token
-  request_token = OAuth::RequestToken.from_hash(
-    consumer,
-    oauth_token: token,
-    oauth_token_secret: secret
-  )
-
-  # Get the access token from the request token and the query params
-  verifier = params[:oauth_verifier]
-  access_token = request_token.get_access_token(oauth_verifier: verifier)
-
-  # Construct the response data, and go
-  data = {
-    access_token: access_token.token,
-    access_token_secret: access_token.secret,
-  }
-  fragment = URI.encode_www_form(data)
-
-  # Form the URL
-  url = URI::Generic.build(
-    scheme: 'pebblejs',
-    host: 'close',
-    fragment: fragment
-  )
-
-  erb :welcome, locals: { location: url }
+  erb :settings, locals: { }
 end
 
 post '/data' do
-  # Reconstruct the access token from the query params
-  access_token = OAuth::AccessToken.from_hash(
-    consumer,
-    oauth_token: params[:access_token],
-    oauth_token_secret: params[:access_token_secret]
-  )
+  incoming_data = JSON.parse(request.body.read)
 
   content_type :json
   JSON.generate({
-    cards: cards_data(access_token),
-    rewards: rewards_data(access_token),
+    cards: cards_data(incoming_data['barcodes'])
   })
-end
-
-post '/raw' do
-  # If we don't have both, someone done goofed
-  halt 401 unless params[:access_token] && params[:access_token_secret]
-
-  # Reconstruct the access token from the query params
-  access_token = OAuth::AccessToken.from_hash(
-    consumer,
-    oauth_token: params[:access_token],
-    oauth_token_secret: params[:access_token_secret]
-  )
-
-  # Get the request URL
-  url = params[:url]
-  halt 400 unless url
-
-  # Make the request
-  response = access_token.get(url, { 'Accept' => 'application/json' })
-
-  # Return the results
-  status response.code
-  headers response.header.to_hash
-  body response.body
 end
