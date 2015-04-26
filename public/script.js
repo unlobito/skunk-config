@@ -93,6 +93,16 @@ function generatePebbleURL() {
 
 function restrictInput(value, i) {
   switch (value) {
+    case 'code39':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", 6);
+      $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      break;
+
+    case 'code128':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", 16);
+      $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      break;
+
     case 'upca':
       $("[name='barcode_" + i + "_data']").attr("maxlength", 12);
       $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
@@ -101,6 +111,7 @@ function restrictInput(value, i) {
     case 'azteccode':
     case 'qrcode':
     case 'datamatrix':
+    case 'pdf417':
       $("[name='barcode_" + i + "_data']").attr("maxlength", "");
       $("[name='barcode_" + i + "_data']").attr("pattern", "");
       break;

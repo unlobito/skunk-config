@@ -26,6 +26,16 @@ def pebble_barcode(type, card)
   elsif type == "upca"
     barcode = Barby::EAN13.new(card)
     barcode_png = barcode.to_png
+  elsif type == "code39" || type == "code128"
+      doc=RGhost::Document.new
+      doc.send(("barcode_"+type).to_sym, card, {:scale => [1,1]})
+
+      barcode_png = doc.render_stream :png
+  elsif type == "pdf417"
+    doc=RGhost::Document.new
+    doc.barcode_pdf417 card, {:columns => 2, :rows => 3, :compact => true, :eclevel => 1}
+
+    barcode_png = doc.render_stream :png
   else
     doc=RGhost::Document.new
     doc.send(("barcode_"+type).to_sym, card, {:x=> 1, :y => 1, :scale => [5,5]})
@@ -39,6 +49,11 @@ def pebble_barcode(type, card)
   # Trim the whitespace
   image.trim!
 
+  # Trim linear barcodes
+  if type == "code39" || type == "code128" || type == "upca"
+    image.crop!(0, 0, image.width, 40)
+  end
+
   width = (40 * image.width / image.height)
   height = 40
 
@@ -48,12 +63,12 @@ def pebble_barcode(type, card)
   end
 
   # Resize
-  if type != "upca" && type != "qrcode"
-    image.resample_bilinear!(width, height)
+  if type != "upca" && type != "qrcode" && type != "pdf417" && type != "code39" && type != "code128"
+    image.resample_nearest_neighbor!(width, height)
   end
 
   # Convert to .pbi format
-  if type != "upca"
+  if type != "upca" && type != "code39" && type != "code128"
     image.to_xbi
   else
     image.to_xbi true

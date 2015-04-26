@@ -32,11 +32,14 @@
           <td class="UIInputDropdown">
             <select name="barcode_<%= i %>_type" onchange="restrictInput(this.value, <%= i %>);">
               <optgroup label="Linear">
+                <option value="code39">Code 39</option>
+                <option value="code128">Code 128</option>
                 <option value="upca">UPC-A</option>
               </optgroup>
               <optgroup label="Matrix">
                 <option value="azteccode">Aztec</option>
                 <option value="datamatrix">Data Matrix</option>
+                <option value="pdf417">PDF 417</option>
                 <option value="qrcode">QR Code</option>
               </optgroup>
             </select>
