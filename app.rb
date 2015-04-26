@@ -62,10 +62,18 @@ end
 
 def cards_data(cards)
   cards.map do |card|
-    {
-      name: card['name'],
-      barcode_data: pebble_barcode(card['type'], card['data'])
-    }
+    if card['type'] == "code39" || card['type'] == "code128" || card['type'] == "upca"
+      {
+        name: card['name'],
+        barcode_data: pebble_barcode(card['type'], card['data']),
+        value: card['data']
+      }
+    else
+      {
+        name: card['name'],
+        barcode_data: pebble_barcode(card['type'], card['data'])
+      }
+    end
   end
 end
 
