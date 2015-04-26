@@ -76,6 +76,10 @@ function addBarcode() {
 
   data = collectData();
   $("#UIBarcode" + data.barcodes.length).css("display", "block");
+
+  $('html, body').animate({
+        scrollTop: $("#UIBarcode" + data.barcodes.length).offset().top
+    }, 2000);
 }
 
 function generatePebbleURL() {

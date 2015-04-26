@@ -1,0 +1,47 @@
+body {
+  margin: 0px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: Helvetica;
+  font-size: 16pt;
+}
+#UIHeader {
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-bottom: 25px;
+}
+.btn {
+  padding: 5px;
+  text-decoration: none;
+  border: solid #ffffff 1px;
+}
+.btn_right {
+  float: right;
+  margin-right: 10px;
+}
+.UIBarcode {
+  padding-top: 10px;
+  padding-left: 10px;
+}
+.UIBarcode:nth-child(odd) {
+  background-color: #323232;
+}
+.UIBarcodeInput {
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+a {
+  color: #ffffff;
+}
+.UIInputDropdown {
+  width: 100%;
+  padding-right: 10px;
+}
+.UIInputBox {
+  width: 100%;
+  padding-right: 30px;
+}
+input, select {
+  width: 100%;
+  font-size: 14pt;
+}
