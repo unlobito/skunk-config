@@ -20,6 +20,8 @@ require './xbi'
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
 def pebble_barcode(type, card)
+  maxpixelcount = (256-3)*8
+
   if type == "qrcode"
     barcode = Barby::QrCode.new(card, {:size => 6, :level => "l"})
     barcode_png = barcode.to_png
@@ -54,17 +56,23 @@ def pebble_barcode(type, card)
     image.crop!(0, 0, image.width, 40)
   end
 
-  width = (40 * image.width / image.height)
-  height = 40
-
-  if width >= 65
-    width = 65
-    height = (65 * image.height / image.width)
-  end
-
   # Resize
   if type != "upca" && type != "qrcode" && type != "pdf417" && type != "code39" && type != "code128"
+    width = (40 * image.width / image.height)
+    height = 40
+
+    if width >= 65
+      width = 65
+      height = (65 * image.height / image.width)
+    end
+
     image.resample_nearest_neighbor!(width, height)
+  end
+
+  if type == "pdf417"
+    height = maxpixelcount / image.width
+
+    image.resample_nearest_neighbor!(image.width, height)
   end
 
   # Convert to .pbi format
