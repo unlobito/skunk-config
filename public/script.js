@@ -8,12 +8,24 @@ $(document).ready(function() {
   }
 });
 
-function collectData() {
+function collectData(strictValidation) {
+  strictValidation = typeof strictValidation !== 'undefined' ? strictValidation : false;
+
   data = { "barcodes": [] };
 
   for (i=0;i<8;i++) {
     if ($("[name='barcode_" + i + "_name']").val() == "" || $("[name='barcode_" + i + "_data']").val() == "") {
       continue;
+    }
+
+    if (strictValidation && $("[name='barcode_" + i + "_type']").val() == "ean13" && $("[name='barcode_" + i + "_data']").val().length !== 13) {
+      alert("EAN-13 barcodes must have 13 numbers!");
+      return false;
+    }
+
+    if (strictValidation && $("[name='barcode_" + i + "_type']").val() == "upca" && $("[name='barcode_" + i + "_data']").val().length !== 12) {
+      alert("UPC-A barcodes must have 12 numbers!");
+      return false;
     }
 
     data.barcodes.push ({
@@ -84,7 +96,11 @@ function addBarcode() {
 }
 
 function generatePebbleURL() {
-  data = collectData();
+  data = collectData(true);
+
+  if (!data) {
+    return;
+  }
 
   data_str = JSON.stringify(data);
 
