@@ -108,6 +108,11 @@ function restrictInput(value, i) {
       $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
       break;
 
+    case 'ean13':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", 13);
+      $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      break;
+
     case 'azteccode':
     case 'qrcode':
     case 'datamatrix':
