@@ -126,12 +126,12 @@ function restrictInput(value, i) {
   switch (value) {
     case 'code39':
       $("[name='barcode_" + i + "_data']").attr("maxlength", 6);
-      $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      $("[name='barcode_" + i + "_data']").attr("pattern", "");
       break;
 
     case 'code128':
       $("[name='barcode_" + i + "_data']").attr("maxlength", 16);
-      $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      $("[name='barcode_" + i + "_data']").attr("pattern", "");
       break;
 
     case 'upca':
