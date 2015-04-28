@@ -3,6 +3,8 @@ require 'chunky_png'
 module ChunkyPNG
   class Image
     def to_xbi(flatBarcode = false)
+      maxpixelcount = (256-3)*8
+
       # 0x00 defines whether the image is a linear or 2D barcode
       if !flatBarcode
         data = [0, self.width, self.height].pack("C*")
@@ -18,6 +20,10 @@ module ChunkyPNG
       y = 0
 
       for i in 0...pixels do
+        if i+1 > maxpixelcount
+          break
+        end
+
         bit_data << pixel_str(self[x, y])
 
         x = x + 1
