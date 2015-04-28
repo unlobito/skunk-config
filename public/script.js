@@ -14,7 +14,7 @@ function collectData(strictValidation) {
   data = { "barcodes": [] };
 
   for (i=0;i<8;i++) {
-    if ($("[name='barcode_" + i + "_name']").val() == "" || $("[name='barcode_" + i + "_data']").val() == "") {
+    if ($("[name='barcode_" + i + "_name']").val() == "" || $("[name='barcode_" + i + "_type']").val() == null || $("[name='barcode_" + i + "_data']").val() == "") {
       continue;
     }
 
