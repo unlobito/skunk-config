@@ -28,7 +28,7 @@ def pebble_barcode(type, card)
   elsif type == "upca"
     barcode = Barby::EAN13.new(card)
     barcode_png = barcode.to_png
-  elsif type == "code39" || type == "code128" || type == "ean13"
+  elsif type == "code39" || type == "code128" || type == "ean13" || type == "rationalizedCodabar"
       doc=RGhost::Document.new
       doc.send(("barcode_"+type).to_sym, card, {:scale => [1,1]})
 
@@ -52,14 +52,14 @@ def pebble_barcode(type, card)
   image.trim!
 
   # Trim linear barcodes
-  if type == "code39" || type == "code128" || type == "upca" || type == "upca"
+  if type == "code39" || type == "code128" || type == "upca" || type == "upca" || type == "rationalizedCodabar"
     if image.height > 50
       image.crop!(0, 0, image.width, 50)
     end
   end
 
   # Resize
-  if type != "upca" && type != "qrcode" && type != "pdf417" && type != "code39" && type != "code128" && type != "ean13"
+  if type != "upca" && type != "qrcode" && type != "pdf417" && type != "code39" && type != "code128" && type != "ean13" && type != "rationalizedCodabar"
     width = (40 * image.width / image.height)
     height = 40
 
@@ -78,7 +78,7 @@ def pebble_barcode(type, card)
   end
 
   # Convert to .pbi format
-  if type != "code39" && type != "code128" && type != "ean13" && type != "upca"
+  if type != "code39" && type != "code128" && type != "ean13" && type != "upca" && type != "rationalizedCodabar"
     image.to_xbi
   else
     image.to_xbi true
@@ -87,7 +87,7 @@ end
 
 def cards_data(cards)
   cards.map do |card|
-    if card['type'] == "code39" || card['type'] == "code128" || card['type'] == "ean13" || card['type'] == "upca"
+    if card['type'] == "rationalizedCodabar" || card['type'] == "code39" || card['type'] == "code128" || card['type'] == "ean13" || card['type'] == "upca"
       {
         name: card['name'],
         barcode_data: pebble_barcode(card['type'], card['data']),

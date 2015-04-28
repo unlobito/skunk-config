@@ -28,6 +28,21 @@ function collectData(strictValidation) {
       return false;
     }
 
+    if (strictValidation && $("[name='barcode_" + i + "_type']").val() == "rationalizedCodabar") {
+      firstChar = $("[name='barcode_" + i + "_data']").val().substr(0, 1);
+      lastChar = $("[name='barcode_" + i + "_data']").val().substr($("[name='barcode_" + i + "_data']").val().length-1, 1);
+
+      if (firstChar !== "A" && firstChar !== "B" && firstChar !== "C" && firstChar !== "D") {
+        alert("Codabars must begin and end with A, B, C, or D!");
+        return false;
+      }
+
+      if (lastChar !== "A" && lastChar !== "B" && lastChar !== "C" && lastChar !== "D") {
+        alert("Codabars must begin and end with A, B, C, or D!");
+        return false;
+      }
+    }
+
     data.barcodes.push ({
       name: $("[name='barcode_" + i + "_name']").val(),
       type: $("[name='barcode_" + i + "_type']").val(),
@@ -127,6 +142,11 @@ function restrictInput(value, i) {
     case 'ean13':
       $("[name='barcode_" + i + "_data']").attr("maxlength", 13);
       $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      break;
+
+    case 'rationalizedCodabar':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", 11);
+      $("[name='barcode_" + i + "_data']").removeAttr("pattern");
       break;
 
     default:
