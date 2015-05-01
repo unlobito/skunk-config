@@ -25,10 +25,7 @@ def pebble_barcode(type, card)
   if type == "qrcode"
     barcode = Barby::QrCode.new(card, {:size => 6, :level => "l"})
     barcode_png = barcode.to_png
-  elsif type == "upca"
-    barcode = Barby::EAN13.new(card)
-    barcode_png = barcode.to_png
-  elsif type == "code39" || type == "code128" || type == "ean13" || type == "rationalizedCodabar"
+  elsif type == "code39" || type == "code128" || type == "ean13" || type == "upca" || type == "rationalizedCodabar"
       doc=RGhost::Document.new
       doc.send(("barcode_"+type).to_sym, card, {:scale => [1,1]})
 
