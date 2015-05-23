@@ -149,6 +149,11 @@ function restrictInput(value, i) {
       $("[name='barcode_" + i + "_data']").removeAttr("pattern");
       break;
 
+    case 'interleaved2of5':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", 13);
+      $("[name='barcode_" + i + "_data']").removeAttr("pattern");
+      break;
+
     default:
       $("[name='barcode_" + i + "_data']").attr("maxlength", "");
       $("[name='barcode_" + i + "_data']").removeAttr("pattern");

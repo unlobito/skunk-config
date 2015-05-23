@@ -25,7 +25,7 @@ def pebble_barcode(type, card)
   if type == "qrcode"
     barcode = Barby::QrCode.new(card, {:size => 6, :level => "l"})
     barcode_png = barcode.to_png
-  elsif type == "code39" || type == "code128" || type == "ean13" || type == "upca" || type == "rationalizedCodabar"
+elsif type == "code39" || type == "code128" || type == "ean13" || type == "upca" || type == "rationalizedCodabar" || type == "interleaved2of5"
       doc=RGhost::Document.new
       doc.send(("barcode_"+type).to_sym, card, {:scale => [1,1]})
 
@@ -49,14 +49,14 @@ def pebble_barcode(type, card)
   image.trim!
 
   # Trim linear barcodes
-  if type == "code39" || type == "code128" || type == "upca" || type == "upca" || type == "rationalizedCodabar"
+  if type == "code39" || type == "code128" || type == "upca" || type == "upca" || type == "rationalizedCodabar" || type == "interleaved2of5"
     if image.height > 50
       image.crop!(0, 0, image.width, 50)
     end
   end
 
   # Resize
-  if type != "upca" && type != "qrcode" && type != "pdf417" && type != "code39" && type != "code128" && type != "ean13" && type != "rationalizedCodabar"
+  if type != "upca" && type != "qrcode" && type != "pdf417" && type != "code39" && type != "code128" && type != "ean13" && type != "rationalizedCodabar" && type != "interleaved2of5"
     width = (40 * image.width / image.height)
     height = 40
 
@@ -75,7 +75,7 @@ def pebble_barcode(type, card)
   end
 
   # Convert to .pbi format
-  if type != "code39" && type != "code128" && type != "ean13" && type != "upca" && type != "rationalizedCodabar"
+  if type != "code39" && type != "code128" && type != "ean13" && type != "upca" && type != "rationalizedCodabar" && type != "interleaved2of5"
     image.to_xbi
   else
     image.to_xbi true
@@ -84,7 +84,7 @@ end
 
 def cards_data(cards)
   cards.map do |card|
-    if card['type'] == "rationalizedCodabar" || card['type'] == "code39" || card['type'] == "code128" || card['type'] == "ean13" || card['type'] == "upca"
+    if card['type'] == "rationalizedCodabar" || card['type'] == "code39" || card['type'] == "code128" || card['type'] == "ean13" || card['type'] == "upca" || card['type'] == "interleaved2of5"
       {
         name: card['name'],
         barcode_data: pebble_barcode(card['type'], card['data']),
