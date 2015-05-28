@@ -19,17 +19,20 @@ require './xbi'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
+$banned_resize = ["upca", "qrcode", "pdf417", "code39", "code128", "ean13", "rationalizedCodabar", "interleaved2of5"]
+$linear_formats = ["code39", "code128", "ean13", "upca", "rationalizedCodabar", "interleaved2of5"]
+
 def pebble_barcode(type, card)
   maxpixelcount = (256-3)*8
 
   if type == "qrcode"
     barcode = Barby::QrCode.new(card, {:size => 6, :level => "l"})
     barcode_png = barcode.to_png
-elsif type == "code39" || type == "code128" || type == "ean13" || type == "upca" || type == "rationalizedCodabar" || type == "interleaved2of5"
-      doc=RGhost::Document.new
-      doc.send(("barcode_"+type).to_sym, card, {:scale => [1,1]})
+  elsif $linear_formats.any? { |s| type.include?(s) }
+    doc=RGhost::Document.new
+    doc.send(("barcode_"+type).to_sym, card, {:scale => [1,1]})
 
-      barcode_png = doc.render_stream :png
+    barcode_png = doc.render_stream :png
   elsif type == "pdf417"
     doc=RGhost::Document.new
     doc.barcode_pdf417 card, {:columns => 2, :rows => 3, :compact => true, :eclevel => 1}
@@ -49,14 +52,14 @@ elsif type == "code39" || type == "code128" || type == "ean13" || type == "upca"
   image.trim!
 
   # Trim linear barcodes
-  if type == "code39" || type == "code128" || type == "upca" || type == "upca" || type == "rationalizedCodabar" || type == "interleaved2of5"
+  if $linear_formats.any? { |s| type.include?(s) }
     if image.height > 50
       image.crop!(0, 0, image.width, 50)
     end
   end
 
   # Resize
-  if type != "upca" && type != "qrcode" && type != "pdf417" && type != "code39" && type != "code128" && type != "ean13" && type != "rationalizedCodabar" && type != "interleaved2of5"
+  if !$banned_resize.any? { |s| type.include?(s) }
     width = (40 * image.width / image.height)
     height = 40
 
@@ -75,7 +78,7 @@ elsif type == "code39" || type == "code128" || type == "ean13" || type == "upca"
   end
 
   # Convert to .pbi format
-  if type != "code39" && type != "code128" && type != "ean13" && type != "upca" && type != "rationalizedCodabar" && type != "interleaved2of5"
+  if !$linear_formats.any? { |s| type.include?(s) }
     image.to_xbi
   else
     image.to_xbi true
@@ -84,7 +87,7 @@ end
 
 def cards_data(cards)
   cards.map do |card|
-    if card['type'] == "rationalizedCodabar" || card['type'] == "code39" || card['type'] == "code128" || card['type'] == "ean13" || card['type'] == "upca" || card['type'] == "interleaved2of5"
+    if $linear_formats.any? { |s| card['type'].include?(s) }
       {
         name: card['name'],
         barcode_data: pebble_barcode(card['type'], card['data']),
