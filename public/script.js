@@ -23,6 +23,11 @@ function collectData(strictValidation) {
       return false;
     }
 
+    if (strictValidation && $("[name='barcode_" + i + "_type']").val() == "ean8" && $("[name='barcode_" + i + "_data']").val().length !== 8) {
+      alert("EAN-8 barcodes must have 8 numbers!");
+      return false;
+    }
+
     if (strictValidation && $("[name='barcode_" + i + "_type']").val() == "upca" && $("[name='barcode_" + i + "_data']").val().length !== 12) {
       alert("UPC-A barcodes must have 12 numbers!");
       return false;
@@ -141,6 +146,11 @@ function restrictInput(value, i) {
 
     case 'ean13':
       $("[name='barcode_" + i + "_data']").attr("maxlength", 13);
+      $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
+      break;
+
+    case 'ean8':
+      $("[name='barcode_" + i + "_data']").attr("maxlength", 8);
       $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
       break;
 

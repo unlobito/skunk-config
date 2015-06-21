@@ -6,6 +6,7 @@ require 'uri'
 
 require 'barby'
 require 'barby/barcode/qr_code'
+require 'barby/barcode/ean_8'
 require 'barby/barcode/ean_13'
 require 'barby/outputter/png_outputter'
 
@@ -20,7 +21,7 @@ require './xbi'
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
 $banned_resize = ["upca", "qrcode", "pdf417", "code39", "code128", "ean13", "rationalizedCodabar", "interleaved2of5"]
-$linear_formats = ["code39", "code128", "ean13", "upca", "rationalizedCodabar", "interleaved2of5"]
+$linear_formats = ["code39", "code128", "ean8", "ean13", "upca", "rationalizedCodabar", "interleaved2of5"]
 
 def pebble_barcode(type, card)
   maxpixelcount = (256-3)*8
