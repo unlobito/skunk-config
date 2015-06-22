@@ -20,7 +20,7 @@ require './xbi'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']
 
-$banned_resize = ["upca", "qrcode", "pdf417", "code39", "code128", "ean13", "rationalizedCodabar", "interleaved2of5"]
+$banned_resize = ["upca", "qrcode", "pdf417", "code39", "code128", "ean13", "ean8", "rationalizedCodabar", "interleaved2of5"]
 $linear_formats = ["code39", "code128", "ean8", "ean13", "upca", "rationalizedCodabar", "interleaved2of5"]
 
 def pebble_barcode(type, card)
