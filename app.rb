@@ -52,13 +52,6 @@ def pebble_barcode(type, card)
   # Trim the whitespace
   image.trim!
 
-  # Trim linear barcodes
-  if $linear_formats.any? { |s| type.include?(s) }
-    if image.height > 50
-      image.crop!(0, 0, image.width, 50)
-    end
-  end
-
   # Resize
   if !$banned_resize.any? { |s| type.include?(s) }
     width = (40 * image.width / image.height)
