@@ -34,10 +34,8 @@ module ChunkyPNG
       end
 
       # pad bit_data to ensure it will nicely fit when converted to binary proper
-      if bit_data.length % 8 != 0
-        for i in 1...bit_data.length % 8 do
-          bit_data << '0'
-        end
+      while bit_data.length % 8 != 0 do
+        bit_data << '0'
       end
 
       bit = bit_data.scan(/.{8}/)
