@@ -27,7 +27,7 @@ def pebble_barcode(type, card)
   maxpixelcount = (256-3)*8
 
   if type == "qrcode"
-    barcode = Barby::QrCode.new(card, {:size => 6, :level => "l"})
+    barcode = Barby::QrCode.new(card, {:level => :l})
     barcode_png = barcode.to_png
   elsif $linear_formats.any? { |s| type.include?(s) }
     doc=RGhost::Document.new
