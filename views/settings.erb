@@ -5,6 +5,7 @@
   <title>Skunk</title>
 
   <link href="/style.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="/script.js"></script>
@@ -19,7 +20,9 @@
     <% (0..7).each do |i| %>
     <div class="UIBarcode" id="UIBarcode<%= i %>" style="display:none">
       Barcode <%= i+1 %>
-      <span onclick="clearBarcode(<%= i %>);" class="btn btn_right">delete</span>
+      <span onclick="clearBarcode(<%= i %>);" class="btn btn_right"><i class="fa fa-trash-o"></i></span>
+      <span onclick="lowerBarcode(<%= i %>);" class="btn btn_right"><i class="fa fa-arrow-down"></i></span>
+      <span onclick="raiseBarcode(<%= i %>);" class="btn btn_right"><i class="fa fa-arrow-up"></i></span>
       <table class="UIBarcodeInput">
         <tr>
           <td>Name</td>

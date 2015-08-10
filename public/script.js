@@ -58,6 +58,26 @@ function collectData(strictValidation) {
   return data;
 }
 
+function raiseBarcode(i) {
+  var data = collectData(false);
+
+  var tmp = data.barcodes[i-1];
+  data.barcodes[i-1] = data.barcodes[i];
+  data.barcodes[i] = tmp;
+
+  renderData(data);
+}
+
+function lowerBarcode(i) {
+  var data = collectData(false);
+
+  var tmp = data.barcodes[i+1];
+  data.barcodes[i+1] = data.barcodes[i];
+  data.barcodes[i] = tmp;
+
+  renderData(data);
+}
+
 function clearBarcode(i) {
   $("[name='barcode_" + i + "_name']").val("");
   $("[name='barcode_" + i + "_type']").val("");
