@@ -10,6 +10,9 @@ body {
   padding-left: 10px;
   padding-bottom: 25px;
 }
+.UIBarcodeInput td:first-child {
+  padding-right: 20px;
+}
 .btn {
   padding: 5px;
   text-decoration: none;
