@@ -96,6 +96,9 @@ function renderData(data) {
       $("[name='barcode_" + i + "_name']").val("");
       $("[name='barcode_" + i + "_type']").val("");
       $("[name='barcode_" + i + "_data']").val("");
+
+      $("#btn_down_" + i).css("display", "none");
+      $("#btn_up_" + i).css("display", "none");
     } else {
       $("#UIBarcode" + i).css("display", "block");
 
@@ -103,6 +106,18 @@ function renderData(data) {
       $("[name='barcode_" + i + "_type']").val(data.barcodes[i].type);
       $("[name='barcode_" + i + "_data']").val(data.barcodes[i].data);
       restrictInput(data.barcodes[i].type, i);
+
+      if (i == 0) {
+        $("#btn_up_" + i).css("display", "none");
+      } else {
+        $("#btn_up_" + i).css("display", "block");
+      }
+
+      if (i == data.barcodes.length-1) {
+        $("#btn_down_" + i).css("display", "none");
+      } else {
+        $("#btn_down_" + i).css("display", "block");
+      }
     }
   }
 }
