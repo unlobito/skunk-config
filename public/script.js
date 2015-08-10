@@ -55,18 +55,6 @@ function collectData(strictValidation) {
     });
   }
 
-  if (data.barcodes.length > 1) {
-    data.barcodes = data.barcodes.sort(function(x, y) {
-      if (x.name < y.name) {
-        return -1;
-      }
-      if (x.name > y.name) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
   return data;
 }
 
