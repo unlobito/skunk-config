@@ -133,6 +133,11 @@ function addBarcode() {
   data = collectData();
   $("#UIBarcode" + data.barcodes.length).css("display", "block");
 
+  if (data.barcodes.length != 0) {
+    $("#btn_down_" + (data.barcodes.length-1)).css("display", "block");
+    $("#btn_up_" + data.barcodes.length).css("display", "block");
+  }
+
   $('html, body').animate({
         scrollTop: $("#UIBarcode" + data.barcodes.length).offset().top
     }, 2000);
