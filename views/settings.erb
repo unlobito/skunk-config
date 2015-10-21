@@ -12,17 +12,17 @@
 </head>
 <body>
   <div id="UIHeader">
-    <span onclick="addBarcode();" class="btn">New</span>
-    <span onclick="generatePebbleURL();" class="btn">Save</span>
+    <button onclick="addBarcode();" class="btn">New</button>
+    <button onclick="generatePebbleURL();" class="btn">Save</button>
   </div>
 
   <div id="UIBarcodeListContainer">
     <% (0..7).each do |i| %>
     <div class="UIBarcode" id="UIBarcode<%= i %>" style="display:none">
       Barcode <%= i+1 %>
-      <span onclick="clearBarcode(<%= i %>);" class="btn btn_right" id="btn_delete_<%= i %>"><i class="fa fa-trash-o"></i></span>
-      <span onclick="lowerBarcode(<%= i %>);" class="btn btn_right" id="btn_down_<%= i %>"><i class="fa fa-arrow-down"></i></span>
-      <span onclick="raiseBarcode(<%= i %>);" class="btn btn_right" id="btn_up_<%= i %>"><i class="fa fa-arrow-up"></i></span>
+      <button onclick="clearBarcode(<%= i %>);" class="btn btn_right" id="btn_delete_<%= i %>"><i class="fa fa-trash-o"></i></button>
+      <button onclick="lowerBarcode(<%= i %>);" class="btn btn_right" id="btn_down_<%= i %>"><i class="fa fa-arrow-down"></i></button>
+      <button onclick="raiseBarcode(<%= i %>);" class="btn btn_right" id="btn_up_<%= i %>"><i class="fa fa-arrow-up"></i></button>
       <table class="UIBarcodeInput">
         <tr>
           <td>Name</td>

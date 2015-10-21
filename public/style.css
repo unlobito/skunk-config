@@ -19,6 +19,10 @@ body {
   border: solid #ffffff 1px;
   min-width: 21px;
   text-align: center;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: Helvetica;
+  font-size: 16pt;
 }
 .btn_right {
   float: right;
