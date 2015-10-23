@@ -273,3 +273,38 @@ function restrictInput(value, i) {
       break;
   }
 }
+
+function importBarcode(i) {
+  $("#camera_input_" + i).click();
+}
+
+function importBarcodeUpload(i) {
+  // http://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
+  var formData = new FormData($("#camera_input_form_" + i)[0]);
+
+  $.ajax({
+    url: "/decode",
+    type: "POST",
+    data: formData,
+
+    // Events
+    success: importBarcodeSuccess,
+    error: importBarcodeError,
+
+    // Stop pre-processing
+    cache: false,
+    contentType: false,
+    processData: false,
+
+    // Callback data
+    barcodeId: i
+  });
+}
+
+function importBarcodeSuccess(data) {
+  $("[name='barcode_" + this.barcodeId + "_data']").val(data);
+}
+
+function importBarcodeError() {
+  alert("Sorry! Something went wrong. Please try again.")
+}

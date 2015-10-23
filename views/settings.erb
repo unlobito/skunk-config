@@ -23,6 +23,13 @@
       <button onclick="clearBarcode(<%= i %>);" class="btn btn_right" id="btn_delete_<%= i %>"><i class="fa fa-trash-o"></i></button>
       <button onclick="lowerBarcode(<%= i %>);" class="btn btn_right" id="btn_down_<%= i %>"><i class="fa fa-arrow-down"></i></button>
       <button onclick="raiseBarcode(<%= i %>);" class="btn btn_right" id="btn_up_<%= i %>"><i class="fa fa-arrow-up"></i></button>
+      <button onclick="importBarcode(<%= i %>);" class="btn btn_right" id="btn_scan_<%= i %>"><i class="fa fa-camera"></i></button>
+
+      <form id="camera_input_form_<%= i %>" enctype="multipart/form-data">
+        <input type="hidden" name="i" value="<%= i %>">
+        <input type="file" capture="camera" accept="image/*" id="camera_input_<%= i %>" onchange="importBarcodeUpload(<%= i %>)" class="camera_input" name="image">
+      </form>
+
       <table class="UIBarcodeInput">
         <tr>
           <td>Name</td>

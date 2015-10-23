@@ -13,6 +13,8 @@ require 'barby/outputter/png_outputter'
 require 'rghost'
 require 'rghost_barcode'
 
+require 'ZXing'
+
 require './env' if File.exists? 'env.rb'
 require './xbi'
 
@@ -109,4 +111,11 @@ post '/data' do
   JSON.generate({
     cards: cards_data(incoming_data['barcodes'])
   })
+end
+
+post '/decode' do
+  uploaded_file = params[:image][:tempfile]
+
+  ZXing.decode! uploaded_file
+
 end

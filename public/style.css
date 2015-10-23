@@ -28,6 +28,9 @@ body {
   float: right;
   margin-right: 10px;
 }
+.camera_input {
+  display: none;
+}
 .UIBarcode {
   padding-top: 10px;
   padding-left: 10px;
