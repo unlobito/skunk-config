@@ -13,8 +13,6 @@ require 'barby/outputter/png_outputter'
 require 'rghost'
 require 'rghost_barcode'
 
-require 'pdf417'
-
 require './env' if File.exists? 'env.rb'
 require './xbi'
 
