@@ -1,1 +1,1 @@
-web: bundle exec app server puma -p $PORT -e $RACK_ENV
+web: bundle exec puma -b tcp://0.0.0.0:$PORT -e $RACK_ENV
