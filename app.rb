@@ -13,7 +13,7 @@ require 'barby/outputter/png_outputter'
 require 'rghost'
 require 'rghost_barcode'
 
-require 'ZXing'
+require 'zxing'
 
 require './env' if File.exists? 'env.rb'
 require './xbi'
