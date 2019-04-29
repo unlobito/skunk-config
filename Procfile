@@ -1,1 +1,1 @@
-web: bundle exec puma -b tcp://0.0.0.0:$PORT -e $RACK_ENV
+web: bundle exec thin -R config.ru start -p $PORT -e $RACK_ENV

@@ -9,9 +9,9 @@ Please file issues against [henriwatson/skunk](https://github.com/henriwatson/sk
 
 Setup
 -----
-If you're not using rbenv, please make sure you have JRuby 9.0.1.0 installed.
+If you're not using rbenv, please make sure you have Ruby 2.1.2 installed.
 
-Use `bundle` to install skunk-config's dependencies. Then, use `puma -b tcp://0.0.0.0:4567`
+Use `bundle` to install skunk-config's dependencies. Then, use `thin -R config.ru start -p 4567`
 to start the web server.
 
 If you want to point your Pebble at your web server, change Skunk's `src/js/pebble-app-js.js`'s
