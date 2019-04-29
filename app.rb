@@ -8,6 +8,9 @@ require 'barby'
 require 'barby/barcode/qr_code'
 require 'barby/barcode/ean_8'
 require 'barby/barcode/ean_13'
+require 'barby/barcode/code_128'
+require 'barby/barcode/code_39'
+require 'barby/barcode/code_25_interleaved'
 require 'barby/outputter/png_outputter'
 
 require 'rghost'
@@ -28,6 +31,26 @@ def pebble_barcode(type, card)
 
   if type == "qrcode"
     barcode = Barby::QrCode.new(card, {:level => :l})
+    barcode_png = barcode.to_png
+  elsif type == "code128"
+    barcode = Barby::Code128.new(card)
+    barcode_png = barcode.to_png
+  elsif type == "code39"
+    barcode = Barby::Code39.new(card)
+    barcode_png = barcode.to_png
+  elsif type == "upca"
+    ## Trim the check digit since Barby calculates that automatically
+    barcode = Barby::UPCA.new(card[0...-1])
+    barcode_png = barcode.to_png
+  elsif type == "ean13"
+    ## Trim the check digit since Barby calculates that automatically
+    barcode = Barby::EAN13.new(card[0...-1])
+    barcode_png = barcode.to_png
+  elsif type == "ean8"
+    barcode = Barby::EAN8.new(card[0...-1])
+    barcode_png = barcode.to_png
+  elsif type == "interleaved2of5"
+    barcode = Barby::Code25Interleaved.new(card)
     barcode_png = barcode.to_png
   elsif $linear_formats.any? { |s| type.include?(s) }
     doc=RGhost::Document.new
