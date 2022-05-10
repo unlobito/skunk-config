@@ -1,11 +1,11 @@
 skunk-config
 ============
-Config panel for [Skunk](https://github.com/henriwatson/skunk). Responsible for
+Config panel for [Skunk](https://github.com/unlobito/skunk). Responsible for
 allowing users to add barcodes as well as generating the images for these barcodes.
 
 Problem?
 --------
-Please file issues against [henriwatson/skunk](https://github.com/henriwatson/skunk/issues).
+Please file issues against [unlobito/skunk](https://github.com/unlobito/skunk/issues).
 
 Setup
 -----
