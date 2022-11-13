@@ -10,6 +10,6 @@ RUN bundle install
 
 COPY public ./public/
 COPY views ./views/
-COPY app.rb config.ru env.rb xbi.rb ./
+COPY app.rb config.ru xbi.rb ./
 
 ENTRYPOINT exec bundle exec thin -R config.ru start -p $PORT -e $RACK_ENV
