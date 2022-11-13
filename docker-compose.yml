@@ -1,0 +1,8 @@
+services:
+  skunk-config:
+    build: .
+    environment:
+      PORT: "5555"
+      RACK_ENV: "production"
+    ports:
+      - 5555:5555
