@@ -17,3 +17,14 @@ to start the web server.
 If you want to point your Pebble at your web server, change Skunk's `src/js/pebble-app-js.js`'s
 third line to your computer's IP address. You can then push the modified Skunk build
 to your phone using the usual `pebble build && pebble install` or CloudPebble.
+
+Privacy
+-------
+skunk-config is hosted on servers located in the United Kingdom 🇬🇧 through the [canidae.systems](https://canidae.systems/)
+cluster for public use at `skunk-config.canidae.systems`.
+
+Analytics are not collected. User data is temporarily stored in-memory for the
+purpose of providing server-side barcode generation and is deleted after processing.
+
+You can also run your own instance of skunk-config, modifying [pebble-js-app.js](https://github.com/unlobito/skunk/blob/main/src/js/pebble-js-app.js#L3)
+to point at your own infrastructure.
