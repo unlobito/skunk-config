@@ -227,7 +227,8 @@ function generatePebbleURL() {
 
   data_str = base64_encode(JSON.stringify(data));
 
-  location.href = 'pebblejs://close#' + data_str;
+  var return_to = new URLSearchParams(location.search).get('return_to') || 'pebblejs://close#';
+  location.href = return_to + data_str;
 }
 
 function restrictInput(value, i) {
