@@ -1,0 +1,9 @@
+services:
+  skunk-config:
+    build: .
+    environment:
+      PORT: "5555"
+      RACK_ENV: "production"
+      COOKIE_SECRET: ""
+    ports:
+      - 5555:5555
