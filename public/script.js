@@ -231,44 +231,90 @@ function generatePebbleURL() {
   location.href = return_to + data_str;
 }
 
+function set_datainput_element(container, type, i) {
+       switch (type) {
+               case 'singleline':
+                       if (container.children[0].tagName == 'INPUT') {
+                               break;
+                       } else {
+                               var data_input = document.createElement('input');
+                               data_input.setAttribute('type', 'text');
+                               break;
+                       }
+
+               case 'multiline':
+                       if (container.children[0].tagName == 'TEXTAREA') {
+                               break;
+                       } else {
+                               var data_input = document.createElement('textarea');
+                               data_input.setAttribute('rows', '10');
+                               break;
+                       }
+
+               default:
+                       if (container.children[0].tagName == 'TEXTAREA') {
+                               break;
+                       } else {
+                               var data_input = document.createElement(type);
+                               data_input.setAttribute('rows', '10');
+                               break;
+                       }
+       }
+
+       if (typeof data_input !== 'undefined') {
+               data_input.setAttribute('name', 'barcode_' + i + '_data');
+               container.replaceChildren(data_input);
+       }
+}
+
+
 function restrictInput(value, i) {
+  var datarow = document.getElementById('barcode_table_entry' + i + '_datarow_input');
   switch (value) {
     case 'code39':
+      set_datainput_element(datarow, 'singleline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", 6);
       $("[name='barcode_" + i + "_data']").attr("pattern", "");
       break;
 
     case 'code128':
+      set_datainput_element(datarow, 'multiline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", 16);
       $("[name='barcode_" + i + "_data']").attr("pattern", "");
       break;
 
     case 'upca':
+      set_datainput_element(datarow, 'singleline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", 12);
       $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
       break;
 
     case 'ean13':
+      set_datainput_element(datarow, 'singleline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", 13);
       $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
       break;
 
     case 'ean8':
+      set_datainput_element(datarow, 'singleline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", 8);
       $("[name='barcode_" + i + "_data']").attr("pattern", "\\d*");
       break;
 
     case 'rationalizedCodabar':
+      set_datainput_element(datarow, 'singleline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", 11);
       $("[name='barcode_" + i + "_data']").removeAttr("pattern");
       break;
 
     case 'interleaved2of5':
+      set_datainput_element(datarow, 'singleline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", 13);
       $("[name='barcode_" + i + "_data']").removeAttr("pattern");
       break;
 
     default:
+      set_datainput_element(datarow, 'multiline', i);
       $("[name='barcode_" + i + "_data']").attr("maxlength", "");
       $("[name='barcode_" + i + "_data']").removeAttr("pattern");
       break;
