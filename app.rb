@@ -16,7 +16,7 @@ require 'barby/outputter/png_outputter'
 require 'rghost'
 require 'rghost_barcode'
 
-require './env' if File.exists? 'env.rb'
+require './env' if File.exist? 'env.rb'
 require './xbi'
 
 use Rack::Session::Cookie, secret: ENV['COOKIE_SECRET']

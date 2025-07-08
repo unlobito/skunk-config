@@ -1,4 +1,4 @@
-FROM ruby:2.7.7-bullseye
+FROM ruby:3.4.4-bullseye
 
 RUN apt update && apt install -y ghostscript && rm -rf /var/lib/apt/lists/*
 
